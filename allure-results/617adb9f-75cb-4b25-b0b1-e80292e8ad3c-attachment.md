@@ -1,0 +1,86 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: AccountRegistration.spec.ts >> User Registration Test
+- Location: tests\AccountRegistration.spec.ts:38:5
+
+# Error details
+
+```
+TypeError: Cannot read properties of undefined (reading 'clickMyAccount')
+```
+
+# Test source
+
+```ts
+  1  | /**
+  2  |  * Test Case: Account Registration
+  3  |  * 
+  4  |  * Tags: @master @sanity @regression
+  5  |  * 
+  6  |  * Steps:
+  7  |  * 1) Navigate to application URL 
+  8  |  * 2) Go to 'My Account' and click 'Register'
+  9  |  * 3) Fill in registration details with random data
+  10 |  * 4) Agree to Privacy Policy and submit the form
+  11 |  * 5) Validate the confirmation message
+  12 |  */
+  13 | 
+  14 | import{test,expect} from '@playwright/test';
+  15 | import { Homepage } from '../pages/HomePage';
+  16 | import {RegistrationPage} from '../pages/RegistrationPage';
+  17 | import { RandomDataUtils } from '../utils/randomDataGenrator';
+  18 | import { TestConfig } from '../test.config';
+  19 | 
+  20 | let homePage:Homepage;
+  21 | let registrationPage:RegistrationPage;
+  22 | let config:TestConfig;
+  23 | 
+  24 | 
+  25 | test.beforeEach(async({page})=>{
+  26 |     const config=new TestConfig();
+  27 |     await page.goto(config.appUrl); // //Navigate to application URL
+  28 |     const homePage=new Homepage(page);
+  29 |     const registrationPage=new RegistrationPage(page);
+  30 | });
+  31 | 
+  32 | test.afterEach(async({page})=>{
+  33 |     await page.waitForTimeout(3000);
+  34 |     await page.close();
+  35 | })
+  36 | 
+  37 | 
+  38 | test("User Registration Test",async()=>{
+  39 | 
+  40 |     //Go to My Account And click the 'Register' Link
+> 41 |     await homePage.clickMyAccount();
+     |                    ^ TypeError: Cannot read properties of undefined (reading 'clickMyAccount')
+  42 |     await homePage.clickRegister();
+  43 | 
+  44 |     //Fill in registration details with random data
+  45 |     
+  46 |     await registrationPage.setFirstName(RandomDataUtils.getFirstName());
+  47 |     await registrationPage.setLastName(RandomDataUtils.getLastName());
+  48 |     await registrationPage.setEmail(RandomDataUtils.getEmail());
+  49 |     await registrationPage.setTelephone(RandomDataUtils.getPhoneNumber());
+  50 | 
+  51 |     const password=RandomDataUtils.getPassword();
+  52 |     await registrationPage.setPassword(password);
+  53 |     await registrationPage.setConfirmPassword(password);
+  54 | 
+  55 |     await registrationPage.setPrivacyPolicy();
+  56 |     await registrationPage.clickContinue();
+  57 | 
+  58 |     //Validate the confirmation Message
+  59 |     const confirmationMsg=await registrationPage.getConfirmationMsg();
+  60 |     expect(confirmationMsg).toContain('Your Account Has Been Created!');
+  61 | 
+  62 |    
+  63 | 
+  64 | })
+```

@@ -1,0 +1,6 @@
+✅ Registration is completed!
+✅ Logout is completed!
+✅ Login is completed!
+✅ Product added to cart!
+🛒 Navigate to shooping Cart Page
+✅ Shopping cart verification completed!
